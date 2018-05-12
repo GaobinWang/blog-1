@@ -5,6 +5,11 @@
   "hexo": {
     "version": "3.7.1"
   },
+  "scripts": {
+    "start": "hexo clean && hexo server",
+    "deploy": "hexo g",
+    "clean": "hexo clean"
+  },
   "dependencies": {
     "hexo": "^3.2.0",
     "hexo-directory-category": "^1.0.5",
