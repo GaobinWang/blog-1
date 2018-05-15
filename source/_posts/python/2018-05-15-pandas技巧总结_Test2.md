@@ -1,0 +1,87 @@
+
+---
+title: -pandas技巧总结_Test2.md
+date: 2018-05-15 7:05:46
+tags: [python,pandas]
+mathjax: true
+---
+
+
+```python
+#####
+“#################”
+#######################################
+#DataFrame按行删除缺失值
+df.dropna(axis=0)
+
+
+#pandas元素替换
+在R中有如下表达式，非常方便。在python中我们可以利用replace函数实现类似的功能。
+data[which(data$var1),"var2"] = value1
+import numpy as np
+import pandas as pd
+ser=pd.Series([0,1,2,3,4,5,3,2,1])
+ser.replace(5,55) #具体值替换
+ser.replace([0,1,2,3,4,5],[5,4,3,2,1,0]) #列表到列表的替换
+ser.replace({1:111,2:222})#字典映射
+#同样的方法也适用于DataFrame
+df=pd.DataFrame({'a':[1,2,3,4,5,6],'b':[11,22,3,4,5,7]})
+df.replace(1,11111)
+
+#DataFrame列和索引互换的方法及整数索引（参考：https://jingyan.baidu.com/album/63acb44a20db7061fdc17e7c.html?picindex=1）
+import numpy as np
+import pandas as pd
+df={'a':range(8),
+'b':np.arange(1,16,2),
+'c':['one']*4+['two']*4,
+'d':np.random.randn(8)}
+df=pd.DataFrame(df)
+df1=df.set_index(['c'])  #设置单索引
+df2 =df.set_index(['c','d'])  #设置双索引
+df3=df.set_index(['c','d'],drop=False) #设置索引后不改变列
+df4=df.set_index(['c','d']).reset_index()  #索引和列的互换
+
+
+#DataFrame将分组后的复合索引转换为列
+df=pd.DataFrame({'key1':['A','B','A','B'],'key2':['X','X','X','X'],'key3':[1,2,3,4]})
+df1=df.groupby(['key1','key2']).sum()
+df2=df.groupby(['key1','key2'],as_index=False).sum()  #分组后的索引仍然为列
+df3=df1.reset_index()  #也可以这样处理
+
+
+#pandas分组排序（对salary依据dep_id进行分组排序）
+My_Frame['sort_id'] = My_Frame['salary'].groupby(My_Frame['dep_id']).rank(ascending=0,method='dense')
+ps:ascending=0表示降序；method='dense'表示如果出现相等，则序号一样，之后序号照常递增
+
+#apply(),applymap()和map()
+apply()和applymap()是DataFrame的函数，map()是Series的函数。
+apply()的操作对象是DataFrame的一行或者一列数据，applymap()是DataFrame的每一个元素。map()也是Series中的每一个元素。
+apply()对dataframe的内容进行批量处理, 这样要比循环来得快。如df.apply(func,axis=0,.....) func：定义的函数，axis=0时为对列操作，=1时为对行操作。
+import numpy as np
+from pandas import Series, DataFrame
+frame = DataFrame(np.random.randn(4, 3),
+                  columns = list('bde'),
+                  index = ['Utah', 'Ohio', 'Texas', 'Oregon'])
+f = lambda x: x.max() - x.min()
+frame.apply(f)
+frame.apply(f, axis = 1)
+
+
+
+#python中查看某个变量所占的空间
+import sys
+sys.getsizeof(data) #返回的单位为字节
+
+#pandas中查看DataFrame的变量类型和占用空间
+data.info(memory_usage='deep')
+
+#查看python以及相关库的版本号
+python --version  #查看python版本
+pandas.__version__   #查看版本
+pandas.__path__  #查看路径
+
+#查看numpy中数据类型的计数范围
+numpy.iinfo(numpy.int64)
+numpy.finfo(numpy.float64)
+```
+
